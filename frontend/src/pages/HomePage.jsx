@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-// Import your Redux action (adjust the path/name to match your slice)
-// import { setUserData } from "../redux/authSlice"; 
 import "./HomePage.css";
 import useFetch from "../hooks/useFetch";
 import useSubmit from "../hooks/useSubmit";

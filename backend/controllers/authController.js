@@ -142,11 +142,7 @@ export const deleteStudent = async (req, res) => {
     if (!id) {
       return res.status(400).json({ message: "Student ID is required" });
     }
-    const student = await User.findById(id);
-    if (!student) {
-      return res.status(404).json({ message: "Student not found" });
-    }
-    await student.remove();
+    const student = await User.findByIdAndDelete(id);
     return res.status(200).json({ message: "Student deleted successfully" });
   } catch (error) {
     return res.status(500).json({ error: error.message || "Server error" });
