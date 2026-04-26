@@ -5,10 +5,12 @@ import HomePage from "./pages/HomePage";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { isAuthenticated } from "./utils/auth";
 import "./App.css";
+import { useSelector } from "react-redux";
+
 
 const App = () => {
+  const { token } = useSelector((state) => state.auth);
   return (
     <div className="app-shell">
       <Navbar />
@@ -16,7 +18,7 @@ const App = () => {
         <Route
           path="/"
           element={
-            <Navigate to={isAuthenticated() ? "/home" : "/login"} replace />
+            <Navigate to={token ? "/home" : "/login"} replace />
           }
         />
         <Route path="/login" element={<Login />} />

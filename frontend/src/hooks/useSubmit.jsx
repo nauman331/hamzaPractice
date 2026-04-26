@@ -1,8 +1,9 @@
 import { useState, useCallback } from "react";
 import { toast } from "react-toastify";
-import { getToken } from "../utils/auth";
+import { useSelector } from "react-redux";
 
 const useSubmit = ({ isAuth = false } = {}) => {
+  const { token } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
 
@@ -25,7 +26,6 @@ const useSubmit = ({ isAuth = false } = {}) => {
         }
 
         if (isAuth) {
-          const token = getToken();
           if (token) {
             headers["Authorization"] = `Bearer ${token}`;
           }
@@ -77,7 +77,7 @@ const useSubmit = ({ isAuth = false } = {}) => {
         setLoading(false);
       }
     },
-    [isAuth],
+    [isAuth, token],
   );
 
   return { submit, loading, data };

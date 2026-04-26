@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
-import { getToken } from "../utils/auth";
+import { useSelector } from "react-redux";
 
 const useFetch = (endpoint, { isAuth = false, immediate = true } = {}) => {
-  const [loading, setLoading] = useState(false);
+  const token = useSelector((state) => state.auth.token);
+  const [loading, setLoading] = useState(immediate);
   const [data, setData] = useState(null);
 
   const fetchData = useCallback(
@@ -18,14 +19,11 @@ const useFetch = (endpoint, { isAuth = false, immediate = true } = {}) => {
           "Content-Type": "application/json",
         };
 
-        if (isAuth) {
-          const token = getToken();
-          if (token) {
-            headers["Authorization"] = `Bearer ${token}`;
-          }
+        if (isAuth && token) {
+          headers["Authorization"] = `Bearer ${token}`;
         }
 
-        const res = await fetch(`http://localhost:4000/api/auth${url}`, {
+        const res = await fetch(`http://localhost:4000${url}`, {
           method: "GET",
           headers,
           credentials: "include",
@@ -50,7 +48,7 @@ const useFetch = (endpoint, { isAuth = false, immediate = true } = {}) => {
         setLoading(false);
       }
     },
-    [endpoint, isAuth],
+    [endpoint, isAuth, token],
   );
 
   useEffect(() => {

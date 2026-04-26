@@ -3,38 +3,38 @@ import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./AuthPages.css";
+import { useDispatch, useSelector } from "react-redux";
+import { setToken, setUser } from "../store/slices/authSlice";
 import useSubmit from "../hooks/useSubmit";
-import { isAuthenticated, setSession } from "../utils/auth";
 
 const Login = () => {
-  const { submit, loading } = useSubmit();
+  const { token, loading, error } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { submit } = useSubmit();
 
-  if (isAuthenticated()) {
+  if (token) {
     return <Navigate to="/home" replace />;
   }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const payload = {
-      email,
-      password,
-    };
-
-    const result = await submit("/login", payload);
-    if (result?.ok) {
-      setSession({
-        token: result.data?.token,
-        user: result.data?.user,
-      });
-      toast.success("Login successful");
-      navigate("/home");
+    try {
+      const res = await submit("/login", { email, password });
+      if (res.ok && res.data) {
+        if (res.data.token) dispatch(setToken({ token: res.data.token }));
+        if (res.data.user) dispatch(setUser({ userdata: res.data.user }));
+        toast.success("Login successful");
+        navigate("/home");
+      } else {
+        toast.error(res.error || "Login failed");
+      }
+    } catch (err) {
+      toast.error("Login failed");
     }
   };
-
   return (
     <section className="auth-page">
       <article className="auth-card">

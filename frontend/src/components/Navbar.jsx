@@ -2,16 +2,19 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import useSubmit from "../hooks/useSubmit";
-import { clearSession, isAuthenticated } from "../utils/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { logOut } from "../store/slices/authSlice";
 
 const Navbar = () => {
   const { submit } = useSubmit({ isAuth: true });
   const navigate = useNavigate();
-  const loggedIn = isAuthenticated();
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
+  const loggedIn = !!token;
 
   const handleLogout = async () => {
     await submit("/logout", {}, { method: "POST" });
-    clearSession();
+    dispatch(logOut());
     navigate("/login");
   };
 
