@@ -44,11 +44,11 @@ export const login = async (req, res) => {
   }
 };
 
-export const register = async (req, res) => {
+export const addstudent = async (req, res) => {
   try {
-    const { fullName, email, password } = req.body || {};
-    if (!fullName || !email || !password) {
-      const missingFields = ["fullName", "email", "password"].filter(
+    const { fullName, email, password, role, isFeePaid, studentclass } = req.body || {};
+    if (!fullName || !email || !password || !studentclass) {
+      const missingFields = ["fullName", "email", "password", "studentclass"].filter(
         (field) => !req.body?.[field],
       );
 
@@ -69,6 +69,9 @@ export const register = async (req, res) => {
       fullName,
       email,
       password: hashedPassword,
+      role,
+      isFeePaid,
+      studentclass
     });
 
     await newUser.save();
@@ -101,6 +104,54 @@ export const getProfile = async (req, res) => {
   }
 };
 
+export const updateStudent = async (req, res) => {
+  try {
+    const { id } = req.params || {};
+    const { fullName, email, isFeePaid, studentclass } = req.body || {};
+
+    if (!id) {
+      return res.status(400).json({ message: "Student ID is required" });
+    }
+
+    const student = await User.findById(id);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+    if (fullName) student.fullName = fullName;
+    if (email) student.email = email;
+    if (isFeePaid !== undefined) student.isFeePaid = isFeePaid;
+    if (studentclass) student.studentclass = studentclass;
+    await student.save();
+    return res.status(200).json({ message: "Student updated successfully", student: sanitizeUser(student) });
+  }
+  catch (error) {
+    return res.status(500).json({ error: error.message || "Server error" });
+  }
+}
+export const getAllStudents = async (req, res) => {
+  try {
+    const students = await User.find({ role: "student" }).select("-password");
+    return res.status(200).json({ students });
+  } catch (error) {
+    return res.status(500).json({ error: error.message || "Server error" });
+  }
+};
+export const deleteStudent = async (req, res) => {
+  try {
+    const { id } = req.params || {};
+    if (!id) {
+      return res.status(400).json({ message: "Student ID is required" });
+    }
+    const student = await User.findById(id);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+    await student.remove();
+    return res.status(200).json({ message: "Student deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ error: error.message || "Server error" });
+  }
+}
 export const logout = async (_req, res) => {
   return res.status(200).json({ message: "Logout successful" });
 };

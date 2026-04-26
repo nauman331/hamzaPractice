@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./AuthPages.css";
@@ -35,20 +34,22 @@ const Login = () => {
       toast.error("Login failed");
     }
   };
+
   return (
-    <section className="auth-page">
+    <section className="auth-page student-portal-bg">
       <article className="auth-card">
-        <p className="auth-kicker">Welcome Back</p>
-        <h1 className="auth-title">Login to your account</h1>
-        <p className="auth-subtitle">Continue building your journey today.</p>
+        {/* Optional: Add a university/school logo image here */}
+        <p className="auth-kicker">Academic Portal</p>
+        <h1 className="auth-title">Student Management System</h1>
+        <p className="auth-subtitle">Access your courses, grades, and campus resources.</p>
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="auth-field">
-            <label htmlFor="login-email">Email</label>
+            <label htmlFor="login-email">Student Email / ID</label>
             <input
               id="login-email"
               type="email"
-              placeholder="you@example.com"
+              placeholder="student@university.edu"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               required
@@ -60,7 +61,7 @@ const Login = () => {
             <input
               id="login-password"
               type="password"
-              placeholder="Enter your password"
+              placeholder="Enter your student password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               required
@@ -68,16 +69,9 @@ const Login = () => {
           </div>
 
           <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Authenticating..." : "Login to Portal"}
           </button>
         </form>
-
-        <p className="auth-note">
-          New here?{" "}
-          <Link to="/signup" className="auth-link">
-            Create account
-          </Link>
-        </p>
       </article>
     </section>
   );

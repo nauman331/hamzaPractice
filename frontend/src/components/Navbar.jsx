@@ -9,7 +9,7 @@ const Navbar = () => {
   const { submit } = useSubmit({ isAuth: true });
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
+  const { token, userdata } = useSelector((state) => state.auth);
   const loggedIn = !!token;
 
   const handleLogout = async () => {
@@ -22,7 +22,7 @@ const Navbar = () => {
     <header className="navbar-wrap">
       <nav className="navbar">
         <NavLink className="brand" to="/home">
-          Northstar
+          {userdata?.fullName || "Student Management"}
         </NavLink>
 
         <div className="nav-links">
@@ -49,14 +49,6 @@ const Navbar = () => {
                 }
               >
                 Login
-              </NavLink>
-              <NavLink
-                to="/signup"
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "nav-link-active" : ""}`
-                }
-              >
-                Signup
               </NavLink>
             </>
           )}
